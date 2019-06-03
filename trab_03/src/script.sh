@@ -9,7 +9,7 @@ gcc -O3 -mavx -march=native main.c SistemasLineares.c matriz.c utils.c -o main -
 > L2CACHE.dat
 > FLOPS_DP.dat
 
-array=(32 50 64)
+array=(32 50 64 100 128 200 256 300 400 512 1000 1024 2000 2048 3000 4000 4096 5000 10000)
 
 # [L3] Loop to iterate different matrix sizes.
 for i in ${array[*]}
