@@ -26,16 +26,16 @@ Vetor geraVetor(int n);
 void liberaMatPtr(MatPtr mPtr, int n);
 void liberaVetor(void *vet);
 
-void multMatPtrVet(MatPtr mat, Vetor v, int m, int n, Vetor res);
+double multMatPtrVet(MatPtr mat, Vetor v, int m, int n, Vetor res);
 void prnMatPtr(MatPtr mat, int m, int n);
 
-void multMatRowVet(MatRow mat, Vetor v, int m, int n, Vetor res);
+double multMatRowVet(MatRow mat, Vetor v, int m, int n, Vetor res);
 void prnMatRow(MatRow mat, int m, int n);
 
-void multMatColVet(MatCol mat, Vetor v, int m, int n, Vetor res);
+double multMatColVet(MatCol mat, Vetor v, int m, int n, Vetor res);
 void prnMatCol(MatCol mat, int m, int n);
 
 double prodEscalar(Vetor v1, Vetor v2, int n);
-double normaMax(Vetor v1, Vetor v2, int n);
-double normaEucl(Vetor vet, int n);
+double normaMax(Vetor v1, Vetor v2, int n, double *time);
+double normaEucl(Vetor vet, int n, double *time);
 void prnVetor(Vetor vet, int n);

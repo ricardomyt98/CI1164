@@ -169,7 +169,7 @@ void liberaVetor(void *vet)
  *
  */
 
-void multMatPtrVet(MatPtr mat, Vetor v, int m, int n, Vetor res)
+double multMatPtrVet(MatPtr mat, Vetor v, int m, int n, Vetor res)
 {
   /* Efetua a multiplicação */
   if (res)
@@ -181,7 +181,8 @@ void multMatPtrVet(MatPtr mat, Vetor v, int m, int n, Vetor res)
         res[i] += mat[i][j] * v[j];
     LIKWID_MARKER_STOP("multMatPtrVet");
     time = timestamp() - time;
-    printf("Timestamp: %lf", time);
+
+    return time;
   }
 }
 
@@ -216,15 +217,21 @@ void prnMatPtr(MatPtr mat, int m, int n)
  *
  */
 
-void multMatRowVet(MatRow mat, Vetor v, int m, int n, Vetor res)
+double multMatRowVet(MatRow mat, Vetor v, int m, int n, Vetor res)
 {
 
   /* Efetua a multiplicação */
   if (res)
   {
+    double time = timestamp();
+    LIKWID_MARKER_START("multMatRowVet");
     for (int i = 0; i < m; ++i)
       for (int j = 0; j < n; ++j)
         res[i] += mat[m * i + j] * v[j];
+    LIKWID_MARKER_STOP("multMatRowVet");
+    time = timestamp() - time;
+
+    return time;
   }
 }
 
@@ -259,15 +266,21 @@ void prnMatRow(MatRow mat, int m, int n)
  *
  */
 
-void multMatColVet(MatCol mat, Vetor v, int m, int n, Vetor res)
+double multMatColVet(MatCol mat, Vetor v, int m, int n, Vetor res)
 {
 
   /* Efetua a multiplicação */
   if (res)
   {
+    double time = timestamp();
+    LIKWID_MARKER_START("multMatColVet");
     for (int i = 0; i < m; ++i)
       for (int j = 0; j < n; ++j)
         res[i] += mat[n * j + i] * v[j];
+    LIKWID_MARKER_STOP("multMatColVet");
+    time = timestamp() - time;
+
+    return time;
   }
 }
 
@@ -318,13 +331,17 @@ double prodEscalar(Vetor v1, Vetor v2, int n)
  *  @return Valor da norma máxima
  */
 
-double normaMax(Vetor v1, Vetor v2, int n)
+double normaMax(Vetor v1, Vetor v2, int n, double *time)
 {
   double max = ABS(v1[0] - v2[0]);
 
+  *time = 0.0;
+  LIKWID_MARKER_START("normaMax");
   for (int i = 0; i < n; ++i)
     if (ABS(v1[i] - v2[i]) > max)
       max = ABS(v1[i] - v2[i]);
+  LIKWID_MARKER_STOP("normaMax");
+  *time = timestamp() - *time;
 
   return max;
 }
@@ -336,12 +353,16 @@ double normaMax(Vetor v1, Vetor v2, int n)
  *  @return Valor da norma euclidiana
  */
 
-double normaEucl(Vetor vet, int n)
+double normaEucl(Vetor vet, int n, double *time)
 {
   double prod = 0.0;
 
+  *time = 0.0;
+  LIKWID_MARKER_START("normaMax");
   for (int i = 0; i < n; ++i)
     prod += vet[i] * vet[i];
+  LIKWID_MARKER_STOP("normaMax");
+  *time = timestamp() - *time;
 
   return sqrt(prod);
 }

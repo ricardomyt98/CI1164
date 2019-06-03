@@ -1,25 +1,43 @@
-#!/bin/sh
+#!/bin/bash
 # Command to use the count registers inside the processor.
 sudo modprobe msr
 # Command to compile with the necessary flags to use the tools of likwid.
 gcc -O3 -mavx -march=native main.c SistemasLineares.c matriz.c utils.c -o main -lm -llikwid -DLIKWID_PERFMON
 
-# Cleaning up the output file.
-> out.txt
+# Cleaning up files.
+> L3.dat
+> L2CACHE.dat
+> FLOPS_DP.dat
 
-# Loop to iterate different matrix sizes.
-for i in 32 50 64
+array=(32 50 64)
+
+# [L3] Loop to iterate different matrix sizes.
+for i in ${array[*]}
 do
-    likwid-perfctr -C 3 -m -g FLOPS_DP ./main $i | grep "Timestamp:" -m 1 | grep -Po "\d+(\.\d+)?" >> timestampDatax.dat
+    VAR1=$(likwid-perfctr -C 3 -m -g L3 ./main 25 | grep "L3 bandwidth \[MBytes/s\]"  -m 1 | grep -Po "\d+\.\d+")
+    VAR2="$i ${VAR1}"
+    echo "$VAR2" >> L3.dat
 done
 
+# [L2CACHE] Loop to iterate different matrix sizes.
+for i in ${array[*]}
+do
+    VAR1=$(likwid-perfctr -C 3 -m -g L2CACHE ./main $i | grep "L2 miss ratio"  -m 1 | grep -Po "\d+\.\d+")
+    VAR2="$i ${VAR1}"
+    echo "$VAR2" >> L2CACHE.dat
+done
 
+# Cleaning up files.
+> multMatPtrVetTimeReport.dat
+> multMatRowVetTimeReport.dat
+> multMatColVetTimeReport.dat
+> normaMaxTimeReport.dat
+> normaEuclTimeReport.dat
 
-plot "timestampData.dat" using 1:2 with lines,\
-"timestampData.dat" using 1:3 with lines,\
-"timestampData.dat" using 1:4 with lines
-
-
-
-
-    # likwid-perfctr -C 3 -m -g FLOPS_DP ./main $i | grep "DP MFLOP/s" -m 1 | grep -Po "\d+(\.\d+)?"
+# [FLOPS_DP] Loop to iterate different matrix sizes.
+for i in ${array[*]}
+do
+    VAR1=$(likwid-perfctr -C 3 -m -g FLOPS_DP ./main $i | grep "DP MFLOP/s" -m 1 | grep -Po "\d+(\.\d+)?")
+    VAR2="$i ${VAR1}"
+    echo "$VAR2" >> FLOPS_DP.dat
+done

@@ -79,16 +79,40 @@ int main(int argc, char *argv[])
     prnVetor(vet, n);
     printf("=================================\n\n");
 #endif /* DEBUG */
+    FILE *multMatPtrVetTimeReport = fopen("multMatPtrVetTimeReport.dat", "ab");
+    FILE *multMatRowVetTimeReport = fopen("multMatRowVetTimeReport.dat", "ab");
+    FILE *multMatColVetTimeReport = fopen("multMatColVetTimeReport.dat", "ab");
+    FILE *normaMaxTimeReport = fopen("normaMaxTimeReport.dat", "ab");
+    FILE *normaEuclTimeReport = fopen("normaEuclTimeReport.dat", "ab");
+    double time;
 
-    multMatPtrVet(mPtr, vet, n, n, resPtr);
+    if (multMatPtrVetTimeReport == NULL || multMatRowVetTimeReport == NULL || multMatColVetTimeReport == NULL)
+    {
+        printf("Error opening file!\n");
+        exit(1);
+    }
 
-    multMatRowVet(mRow, vet, n, n, resRow);
+    time = multMatPtrVet(mPtr, vet, n, n, resPtr);
+    fprintf(multMatPtrVetTimeReport, "%i %lf\n", n, time);
+    fclose(multMatPtrVetTimeReport);
 
-    multMatColVet(mCol, vet, n, n, resCol);
+    time = multMatRowVet(mRow, vet, n, n, resRow);
+    fprintf(multMatRowVetTimeReport, "%i %lf\n", n, time);
+    fclose(multMatRowVetTimeReport);
 
-    norma = normaMax(resRow, resPtr, n);
+    time = multMatColVet(mCol, vet, n, n, resCol);
+    fprintf(multMatColVetTimeReport, "%i %lf\n", n, time);
+    fclose(multMatColVetTimeReport);
 
-    norma = normaEucl(resCol, n);
+    double time2;
+
+    norma = normaMax(resRow, resPtr, n, &time2);
+    fprintf(normaMaxTimeReport, "%i %lf\n", n, time2);
+    fclose(normaMaxTimeReport);
+
+    norma = normaEucl(resCol, n, &time2);
+    fprintf(normaEuclTimeReport, "%i %lf\n", n, time2);
+    fclose(normaEuclTimeReport);
 
 #ifdef DEBUG
     prnVetor(resPtr, n);
